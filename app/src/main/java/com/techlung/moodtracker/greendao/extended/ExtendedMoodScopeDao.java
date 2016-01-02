@@ -21,7 +21,7 @@ public class ExtendedMoodScopeDao {
         return queryBuilder.list();
     }
 
-    public MoodScope getMoodScopeById(String id) {
+    public MoodScope getMoodScopeById(Long id) {
         QueryBuilder<MoodScope> queryBuilder = dao.queryBuilder();
         queryBuilder.where(MoodScopeDao.Properties.Id.eq(id));
         return queryBuilder.unique();
@@ -42,8 +42,19 @@ public class ExtendedMoodScopeDao {
         dao.insertOrReplace(moodScope);
     }
 
+    public void update(MoodScope moodScope) {
+        dao.update(moodScope);
+    }
+
     public void delete(MoodScope moodScope) {
         dao.delete(moodScope);
+    }
+
+    public void deleteById(Long id) {
+        MoodScope scope = getMoodScopeById(id);
+        if (scope != null) {
+            dao.delete(scope);
+        }
     }
 
     public void deleteAll() {

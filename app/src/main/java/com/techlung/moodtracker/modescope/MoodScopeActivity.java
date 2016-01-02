@@ -4,20 +4,45 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.techlung.moodtracker.R;
 import com.techlung.moodtracker.greendao.extended.DaoFactory;
+import com.techlung.moodtracker.greendao.extended.ExtendedMoodScopeDao;
 import com.techlung.moodtracker.greendao.generated.MoodScope;
 
+import java.util.List;
+
 public class MoodScopeActivity extends AppCompatActivity {
+
+    UltimateRecyclerView ultimateRecyclerView;
+    MoodScopeDragAdapter adapter = null;
+    LinearLayoutManager linearLayoutManager;
+
+    ExtendedMoodScopeDao extendedMoodScopeDao;
+
+    private static MoodScopeActivity instance;
+
+    public static MoodScopeActivity getInstance() {
+        return instance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        instance = this;
+
         setContentView(R.layout.mood_scope_activity);
+
+        extendedMoodScopeDao = DaoFactory.getInstance(this).getExtendedMoodScopeDao();
+
+        ultimateRecyclerView = (UltimateRecyclerView) findViewById(R.id.ultimate_recycler_view);
+        ultimateRecyclerView.setHasFixedSize(false);
 
         findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -25,10 +50,20 @@ public class MoodScopeActivity extends AppCompatActivity {
                 addMoodScopeItem();
             }
         });
+
+        updateMoodScopeList();
     }
 
     private void updateMoodScopeList() {
 
+        List<MoodScope> data = extendedMoodScopeDao.getAllMoodScopes();
+
+        adapter = new MoodScopeDragAdapter(ultimateRecyclerView, data);
+
+        linearLayoutManager = new LinearLayoutManager(this);
+
+        ultimateRecyclerView.setLayoutManager(linearLayoutManager);
+        ultimateRecyclerView.setAdapter(adapter);
     }
 
     private void addMoodScopeItem() {
@@ -44,11 +79,14 @@ public class MoodScopeActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String text = input.getText().toString();
 
-                if (validateMoodScope(text, input))  {
+                if (validateAddMoodScope(text, input)) {
                     MoodScope scope = new MoodScope();
-                    int sequence = (int) DaoFactory.getInstance(MoodScopeActivity.this).getExtendedMoodScopeDao().getCount();
+                    int sequence = (int) extendedMoodScopeDao.getCount();
                     scope.setName(text);
                     scope.setSequence(sequence + 1);
+
+                    extendedMoodScopeDao.insertOrReplace(scope);
+
                     dialog.dismiss();
                     updateMoodScopeList();
                 }
@@ -60,13 +98,16 @@ public class MoodScopeActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+
+        builder.show();
     }
 
-    private boolean validateMoodScope(String text, EditText input) {
+    private boolean validateAddMoodScope(String text, EditText input) {
         if (text == null || text.trim().equals("")) {
+
             input.setError(getString(R.string.moodscope_add_input_error_empty));
             return false;
-        } else if (DaoFactory.getInstance(this).getExtendedMoodScopeDao().getMoodScopeByName(text) != null) {
+        } else if (extendedMoodScopeDao.getMoodScopeByName(text) != null) {
             input.setError(getString(R.string.moodscope_add_input_error_exists));
             return false;
         } else {
