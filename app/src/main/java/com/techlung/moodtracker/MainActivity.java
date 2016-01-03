@@ -1,5 +1,7 @@
 package com.techlung.moodtracker;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,14 +21,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.techlung.moodtracker.greendao.extended.DaoFactory;
+import com.techlung.moodtracker.greendao.extended.ExtendedMoodScopeDao;
+import com.techlung.moodtracker.greendao.generated.MoodScope;
 import com.techlung.moodtracker.logbook.LogListFragment;
 import com.techlung.moodtracker.modescope.MoodScopeActivity;
+import com.techlung.moodtracker.settings.Preferences;
 import com.techlung.moodtracker.settings.SettingsActivity;
 import com.techlung.moodtracker.tracking.TrackingFragment;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -39,15 +48,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -68,6 +67,10 @@ public class MainActivity extends AppCompatActivity
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        checkAndDoFirstStart();
+        setUserToUi();
+
     }
 
     @Override
@@ -128,6 +131,58 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void checkAndDoFirstStart() {
+        if (Preferences.isFirstStartup()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View inputLayout = LayoutInflater.from(this).inflate(R.layout.alert_input, null);
+            final EditText input = (EditText) inputLayout.findViewById(R.id.alert_input);
+            input.setHint(R.string.first_start_what_is_your_name_hint);
+
+            builder.setView(inputLayout);
+            builder.setCancelable(false);
+            builder.setTitle(R.string.first_start_what_is_your_name);
+            builder.setPositiveButton(R.string.alert_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String userName = input.getText().toString().trim();
+
+                    Preferences.setUserName(userName);
+                    setUserToUi();
+                    initDatabase();
+                    Preferences.setFirstStart(false);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle(String.format(getString(R.string.first_start_welcome), userName));
+                    builder.setMessage(R.string.first_start_welcome_message);
+                    builder.setPositiveButton(R.string.alert_thanks, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                }
+            });
+
+            builder.show();
+
+        }
+    }
+
+    private void setUserToUi() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        TextView userTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_user);
+        userTextView.setText(Preferences.getUserName().toUpperCase());
+    }
+    private void initDatabase() {
+        ExtendedMoodScopeDao extendedMoodScopeDao =  DaoFactory.getInstance(this).getExtendedMoodScopeDao();
+
+        extendedMoodScopeDao.insertOrReplace(new MoodScope(0l, "Work", 1));
+        extendedMoodScopeDao.insertOrReplace(new MoodScope(1l, "Family", 2));
+        extendedMoodScopeDao.insertOrReplace(new MoodScope(2l, "Social", 3));
+        extendedMoodScopeDao.insertOrReplace(new MoodScope(3l, "Overall", 4));
     }
 
 

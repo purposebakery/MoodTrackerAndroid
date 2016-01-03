@@ -12,7 +12,7 @@
 
     <string name="title_activity_main">Mood Tracker</string>
 
-    <string name="nav_header_title">tracking our one and only</string>
+    <string name="nav_header_title">tracking</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -31,12 +31,17 @@
     <string name="moodscope_add_input_error_empty">Empty input</string>
     <string name="moodscope_add_input_error_exists">Scope already exists</string>
 
+    <!-- FirstStart -->
+    <string name="first_start_welcome">Welcome to your mood tracker %1$s.</string>
+    <string name="first_start_welcome_message">I wish you only the best and hope this helps a little :)</string>
+    <string name="first_start_what_is_your_name">What is your name?</string>
+    <string name="first_start_what_is_your_name_hint">Name</string>
+
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 
     <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">User</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">

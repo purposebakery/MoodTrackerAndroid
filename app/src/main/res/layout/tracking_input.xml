@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    
+    <TextView
+        android:id="@+id/scope"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/inputs"
+        android:gravity="left"
+        android:textSize="@dimen/moodscope_text_size"
+        android:layout_margin="18dp"
+        android:text="scope"
+        android:layout_centerVertical="true"/>
+
+    <LinearLayout
+        android:id="@+id/inputs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentRight="true"
+        android:layout_margin="18dp"
+        android:gravity="right"
+        android:layout_centerVertical="true">
+        
+        <RelativeLayout
+            android:id="@+id/mood_very_low"
+            android:layout_width="@dimen/tracking_element_size"
+            android:layout_height="@dimen/tracking_element_size">
+
+            <ImageView
+                android:id="@+id/mood_very_low_img"
+                android:layout_width="@dimen/tracking_element_image_size"
+                android:layout_height="@dimen/tracking_element_image_size"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_action_emo_very_low"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/mood_low"
+            android:layout_width="@dimen/tracking_element_size"
+            android:layout_height="@dimen/tracking_element_size">
+
+            <ImageView
+                android:id="@+id/mood_low_img"
+                android:layout_width="@dimen/tracking_element_image_size"
+                android:layout_height="@dimen/tracking_element_image_size"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_action_emo_low"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/mood_normal"
+            android:layout_width="@dimen/tracking_element_size"
+            android:layout_height="@dimen/tracking_element_size">
+
+            <ImageView
+                android:id="@+id/mood_normal_img"
+                android:layout_width="@dimen/tracking_element_image_size"
+                android:layout_height="@dimen/tracking_element_image_size"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_action_emo_normal"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/mood_high"
+            android:layout_width="@dimen/tracking_element_size"
+            android:layout_height="@dimen/tracking_element_size">
+
+            <ImageView
+                android:id="@+id/mood_high_img"
+                android:layout_width="@dimen/tracking_element_image_size"
+                android:layout_height="@dimen/tracking_element_image_size"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_action_emo_high"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/mood_very_high"
+            android:layout_width="@dimen/tracking_element_size"
+            android:layout_height="@dimen/tracking_element_size">
+
+            <ImageView
+                android:id="@+id/mood_very_high_img"
+                android:layout_width="@dimen/tracking_element_image_size"
+                android:layout_height="@dimen/tracking_element_image_size"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_action_emo_very_high"/>
+
+        </RelativeLayout>
+        
+    </LinearLayout>
+    
+</RelativeLayout>
