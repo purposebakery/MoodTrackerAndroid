@@ -6,10 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.marshalchen.ultimaterecyclerview.dragsortadapter.DragSortAdapter;
@@ -21,10 +18,10 @@ import com.techlung.moodtracker.greendao.generated.MoodScope;
 
 import java.util.List;
 
-public class MoodScopeDragAdapter extends DragSortAdapter<MoodScopeDragAdapter.MainViewHolder> {
+public class MoodScopeAdapter extends DragSortAdapter<MoodScopeAdapter.MainViewHolder> {
     private List<MoodScope> data;
 
-    public MoodScopeDragAdapter(UltimateRecyclerView recyclerView, List<MoodScope> data) {
+    public MoodScopeAdapter(UltimateRecyclerView recyclerView, List<MoodScope> data) {
         super(recyclerView.mRecyclerView);
         this.data = data;
     }
@@ -32,7 +29,7 @@ public class MoodScopeDragAdapter extends DragSortAdapter<MoodScopeDragAdapter.M
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.mood_scope_drag_adapter, parent, false);
+        View view = inflater.inflate(R.layout.mood_scope_item, parent, false);
         MainViewHolder holder = new MainViewHolder(this, view);
         view.setOnClickListener(holder);
         view.setOnLongClickListener(holder);
@@ -155,7 +152,7 @@ public class MoodScopeDragAdapter extends DragSortAdapter<MoodScopeDragAdapter.M
                 @Override
                 public void onClick(View v) {
                     long id = (long) delete.getTag();
-                    MoodScopeDragAdapter.this.delete(id);
+                    MoodScopeAdapter.this.delete(id);
 
                 }
             });
