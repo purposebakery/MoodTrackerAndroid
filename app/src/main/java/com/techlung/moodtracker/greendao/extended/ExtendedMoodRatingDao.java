@@ -17,7 +17,7 @@ public class ExtendedMoodRatingDao {
 
     public List<MoodRating> getAllMoodRatings() {
         QueryBuilder<MoodRating> queryBuilder = dao.queryBuilder();
-        queryBuilder.orderAsc(MoodRatingDao.Properties.Day);
+        queryBuilder.orderDesc(MoodRatingDao.Properties.Day);
         return queryBuilder.list();
     }
 

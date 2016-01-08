@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
     android:id="@+id/itemview">
 
     <RelativeLayout
@@ -21,16 +22,33 @@
 
     </RelativeLayout>
 
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/moodscope_text_size"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:text="12.12.2001"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_toLeftOf="@+id/delete"/>
+
     <TextView
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/moodscope_text_size"
         android:textColor="@android:color/black"
-        android:layout_margin="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:text="This is some text about a positive experience"
         android:layout_toLeftOf="@+id/delete"
-        android:layout_centerVertical="true"/>
+        android:layout_below="@+id/date"/>
 
 
 

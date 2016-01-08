@@ -21,6 +21,8 @@ import java.util.List;
 
 public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
 
+    public static final float FADED = 0.1f;
+    
     public TrackingSummaryAdapter(Context context, int textViewResourceId, List<MoodRating> objects) {
         super(context, textViewResourceId, objects);
     }
@@ -44,22 +46,22 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
         final ImageView high = (ImageView) convertView.findViewById(R.id.mood_high_img);
         final ImageView veryHigh = (ImageView) convertView.findViewById(R.id.mood_very_high_img);
 
-        veryLow.setAlpha(0.3f);
-        low.setAlpha(0.3f);
-        normal.setAlpha(0.3f);
-        high.setAlpha(0.3f);
-        veryHigh.setAlpha(0.3f);
+        veryLow.setAlpha(FADED);
+        low.setAlpha(FADED);
+        normal.setAlpha(FADED);
+        high.setAlpha(FADED);
+        veryHigh.setAlpha(FADED);
         /*
-        veryLow.setScaleX(0.3f);
-        veryLow.setScaleY(0.3f);
-        low.setScaleX(0.3f);
-        low.setScaleY(0.3f);
-        normal.setScaleX(0.3f);
-        normal.setScaleY(0.3f);
-        high.setScaleX(0.3f);
-        high.setScaleY(0.3f);
-        veryHigh.setScaleX(0.3f);
-        veryHigh.setScaleY(0.3f);
+        veryLow.setScaleX(FADED);
+        veryLow.setScaleY(FADED);
+        low.setScaleX(FADED);
+        low.setScaleY(FADED);
+        normal.setScaleX(FADED);
+        normal.setScaleY(FADED);
+        high.setScaleX(FADED);
+        high.setScaleY(FADED);
+        veryHigh.setScaleX(FADED);
+        veryHigh.setScaleY(FADED);
 */
 
         /*
@@ -109,7 +111,7 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
                 DaoFactory.getInstance(getContext()).getExtendedMoodRatingDao().update(item);
                 //veryLow.startAnimation(createFadeinAnimation(veryLow));
                 veryLow.setAlpha(1.0f);
-                YoYo.with(Techniques.Bounce).duration(500).playOn(veryLow);
+                YoYo.with(Techniques.Tada).duration(500).playOn(veryLow);
             }
         });
 
@@ -121,7 +123,7 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
                 DaoFactory.getInstance(getContext()).getExtendedMoodRatingDao().update(item);
                 //low.startAnimation(createFadeinAnimation(low));
                 low.setAlpha(1.0f);
-                YoYo.with(Techniques.Bounce).duration(500).playOn(low);
+                YoYo.with(Techniques.Tada).duration(500).playOn(low);
             }
         });
 
@@ -133,7 +135,7 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
                 DaoFactory.getInstance(getContext()).getExtendedMoodRatingDao().update(item);
                 //normal.startAnimation(createFadeinAnimation(normal));
                 normal.setAlpha(1.0f);
-                YoYo.with(Techniques.Bounce).duration(500).playOn(normal);
+                YoYo.with(Techniques.Tada).duration(500).playOn(normal);
             }
         });
 
@@ -145,7 +147,7 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
                 DaoFactory.getInstance(getContext()).getExtendedMoodRatingDao().update(item);
                 //high.startAnimation(createFadeinAnimation(high));
                 high.setAlpha(1.0f);
-                YoYo.with(Techniques.Bounce).duration(500).playOn(high);
+                YoYo.with(Techniques.Tada).duration(500).playOn(high);
             }
         });
 
@@ -157,7 +159,7 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
                 DaoFactory.getInstance(getContext()).getExtendedMoodRatingDao().update(item);
                 //veryHigh.startAnimation(createFadeinAnimation(veryHigh));
                 veryHigh.setAlpha(1.0f);
-                YoYo.with(Techniques.Bounce).duration(500).playOn(veryHigh);
+                YoYo.with(Techniques.Tada).duration(500).playOn(veryHigh);
             }
         });
 
@@ -167,19 +169,19 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
     private void fadeoutSelected(View moodVeryLow, View moodLow, View moodNormal, View moodHigh, View moodVeryHigh, Integer rating) {
         switch (rating) {
             case Rating.VERY_LOW:
-                moodVeryLow.setAlpha(0.3f);
+                moodVeryLow.setAlpha(FADED);
                 break;
             case Rating.LOW:
-                moodLow.setAlpha(0.3f);
+                moodLow.setAlpha(FADED);
                 break;
             case Rating.NORMAL:
-                moodNormal.setAlpha(0.3f);
+                moodNormal.setAlpha(FADED);
                 break;
             case Rating.HIGH:
-                moodHigh.setAlpha(0.3f);
+                moodHigh.setAlpha(FADED);
                 break;
             case Rating.VERY_HIGH:
-                moodVeryHigh.setAlpha(0.3f);
+                moodVeryHigh.setAlpha(FADED);
                 break;
         }
     }
@@ -206,7 +208,7 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
 
     private Animation createFadeoutAnimation(final View view) {
         view.setAlpha(1.0f);
-        Animation animation = new AlphaAnimation(1.0f, 0.3f);
+        Animation animation = new AlphaAnimation(1.0f, FADED);
         animation.setDuration(500);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -216,7 +218,7 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                view.setAlpha(0.3f);
+                view.setAlpha(FADED);
             }
 
             @Override
@@ -228,8 +230,8 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
     }
 
     private Animation createFadeinAnimation(final View view) {
-        view.setAlpha(0.3f);
-        Animation animation = new AlphaAnimation(0.3f, 1.0f);
+        view.setAlpha(FADED);
+        Animation animation = new AlphaAnimation(FADED, 1.0f);
         animation.setDuration(500);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -307,8 +309,8 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                view.setScaleX(0.3f);
-                view.setScaleY(0.3f);
+                view.setScaleX(FADED);
+                view.setScaleY(FADED);
             }
 
             @Override

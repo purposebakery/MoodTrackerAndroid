@@ -38,6 +38,12 @@
     <string name="first_start_what_is_your_name_hint">Name</string>
 
     <!-- Tracking -->
+    <string name="log_add_title">Positivity Entry</string>
+    <string name="log_add_input_hint">Tell me something nice that happened to you today :)</string>
+    <string name="log_add_input_error_empty">Empty input</string>
+
+
+    <!-- Log -->
     <string name="tracking_summary">Summary</string>
 
     <!-- Example General settings -->

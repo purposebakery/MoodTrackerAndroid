@@ -79,17 +79,15 @@ public class MoodScopeActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String text = input.getText().toString();
 
-                if (validateAddMoodScope(text, input)) {
-                    MoodScope scope = new MoodScope();
-                    int sequence = (int) extendedMoodScopeDao.getCount();
-                    scope.setName(text);
-                    scope.setSequence(sequence + 1);
+                MoodScope scope = new MoodScope();
+                int sequence = (int) extendedMoodScopeDao.getCount();
+                scope.setName(text);
+                scope.setSequence(sequence + 1);
 
-                    extendedMoodScopeDao.insertOrReplace(scope);
+                extendedMoodScopeDao.insertOrReplace(scope);
 
-                    dialog.dismiss();
-                    updateMoodScopeList();
-                }
+                dialog.dismiss();
+                updateMoodScopeList();
             }
         });
         builder.setNegativeButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
@@ -102,18 +100,4 @@ public class MoodScopeActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private boolean validateAddMoodScope(String text, EditText input) {
-        if (text == null || text.trim().equals("")) {
-
-            input.setError(getString(R.string.moodscope_add_input_error_empty));
-            return false;
-        } else if (extendedMoodScopeDao.getMoodScopeByName(text) != null) {
-            input.setError(getString(R.string.moodscope_add_input_error_exists));
-            return false;
-        } else {
-            input.setError(null);
-        }
-
-        return true;
-    }
 }

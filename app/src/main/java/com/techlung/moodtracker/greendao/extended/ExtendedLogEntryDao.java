@@ -14,9 +14,15 @@ public class ExtendedLogEntryDao {
         this.dao = LogEntryDao;
     }
 
+    public LogEntry getLogEntryById(Long id) {
+        QueryBuilder<LogEntry> queryBuilder = dao.queryBuilder();
+        queryBuilder.where(LogEntryDao.Properties.Id.eq(id));
+        return queryBuilder.unique();
+    }
     public List<LogEntry> getAllLogEntries() {
         QueryBuilder<LogEntry> queryBuilder = dao.queryBuilder();
-        queryBuilder.orderAsc(LogEntryDao.Properties.Day);
+        queryBuilder.orderDesc(LogEntryDao.Properties.Day);
+        queryBuilder.orderDesc(LogEntryDao.Properties.Timestamp);
         return queryBuilder.list();
     }
 
@@ -39,5 +45,12 @@ public class ExtendedLogEntryDao {
 
     public void deleteAll() {
         dao.deleteAll();
+    }
+
+    public void deleteById(Long id) {
+        LogEntry scope = getLogEntryById(id);
+        if (scope != null) {
+            dao.delete(scope);
+        }
     }
 }

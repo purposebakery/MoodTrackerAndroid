@@ -11,6 +11,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,12 +21,14 @@
         </activity>
         <activity
             android:name=".modescope.MoodScopeActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName="com.techlung.moodtracker.MainActivity"
             android:label="@string/title_activity_moodscopes" />
         <activity
             android:name=".settings.SettingsActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName="com.techlung.moodtracker.MainActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings"/>
     </application>
 
 </manifest>

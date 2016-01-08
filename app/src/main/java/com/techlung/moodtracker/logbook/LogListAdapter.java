@@ -7,222 +7,61 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.SimpleAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
 import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
+import com.techlung.moodtracker.MainActivity;
 import com.techlung.moodtracker.R;
+import com.techlung.moodtracker.greendao.extended.DaoFactory;
+import com.techlung.moodtracker.greendao.extended.ExtendedMoodScopeDao;
 import com.techlung.moodtracker.greendao.generated.LogEntry;
+import com.techlung.moodtracker.modescope.MoodScopeActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-public class LogListAdapter extends UltimateViewAdapter<SimpleAdapter.SimpleAdapterViewHolder> {
-    private List<String> stringList;
+public class LogListAdapter extends ArrayAdapter<LogEntry> {
 
-    public LogListAdapter(List<String> stringList) {
-        this.stringList = stringList;
+
+    public LogListAdapter(Context context, int resource, List<LogEntry> objects) {
+        super(context, resource, objects);
     }
 
-
     @Override
-    public void onBindViewHolder(final SimpleAdapterViewHolder holder, int position) {
-        if (position < getItemCount() && (customHeaderView != null ? position <= stringList.size() : position < stringList.size()) && (customHeaderView != null ? position > 0 : true)) {
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-            ((SimpleAdapterViewHolder) holder).textViewSample.setText(stringList.get(customHeaderView != null ? position - 1 : position));
-            // ((ViewHolder) holder).itemView.setActivated(selectedItems.get(position, false));
-            if (mDragStartListener != null) {
-//                ((ViewHolder) holder).imageViewSample.setOnTouchListener(new View.OnTouchListener() {
-//                    @Override
-//                    public boolean onTouch(View v, MotionEvent event) {
-//                        if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-//                            mDragStartListener.onStartDrag(holder);
-//                        }
-//                        return false;
-//                    }
-//                });
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.log_list_item, null, false);
+        }
 
-                ((SimpleAdapterViewHolder) holder).item_view.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        return false;
-                    }
-                });
+        final LogEntry entry = getItem(position);
+
+        TextView text = (TextView) convertView.findViewById(R.id.text);
+        text.setText(entry.getText());
+
+        TextView date = (TextView) convertView.findViewById(R.id.date);
+        date.setText(getWeekOfDay(entry.getDay()));
+
+        convertView.findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DaoFactory.getInstance(getContext()).getExtendedLogEntryDao().delete(entry);
+                remove(entry);
+                notifyDataSetChanged();
             }
-        }
+        });
 
+        return convertView;
     }
 
-    @Override
-    public int getAdapterItemCount() {
-        return stringList.size();
+    public String getWeekOfDay(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("EEEE", Locale.getDefault());
+        return format.format(date);
     }
 
-    @Override
-    public SimpleAdapterViewHolder getViewHolder(View view) {
-        return new SimpleAdapterViewHolder(view, false);
-    }
-
-    @Override
-    public SimpleAdapterViewHolder onCreateViewHolder(ViewGroup parent) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recycler_view_adapter, parent, false);
-        SimpleAdapterViewHolder vh = new SimpleAdapterViewHolder(v, true);
-        return vh;
-    }
-
-
-    public void insert(String string, int position) {
-        insert(stringList, string, position);
-    }
-
-    public void remove(int position) {
-        remove(stringList, position);
-    }
-
-    public void clear() {
-        clear(stringList);
-    }
-
-    @Override
-    public void toggleSelection(int pos) {
-        super.toggleSelection(pos);
-    }
-
-    @Override
-    public void setSelected(int pos) {
-        super.setSelected(pos);
-    }
-
-    @Override
-    public void clearSelection(int pos) {
-        super.clearSelection(pos);
-    }
-
-
-    public void swapPositions(int from, int to) {
-        swapPositions(stringList, from, to);
-    }
-
-
-    @Override
-    public long generateHeaderId(int position) {
-        // URLogs.d("position--" + position + "   " + getItem(position));
-        if (getItem(position).length() > 0)
-            return getItem(position).charAt(0);
-        else return -1;
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.stick_header_item, viewGroup, false);
-        return new RecyclerView.ViewHolder(view) {
-        };
-    }
-
-    @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-
-        TextView textView = (TextView) viewHolder.itemView.findViewById(R.id.stick_text);
-        textView.setText(String.valueOf(getItem(position).charAt(0)));
-//        viewHolder.itemView.setBackgroundColor(Color.parseColor("#AA70DB93"));
-        viewHolder.itemView.setBackgroundColor(Color.parseColor("#AAffffff"));
-        ImageView imageView = (ImageView) viewHolder.itemView.findViewById(R.id.stick_img);
-
-        SecureRandom imgGen = new SecureRandom();
-        switch (imgGen.nextInt(3)) {
-            case 0:
-                imageView.setImageResource(R.drawable.test_back1);
-                break;
-            case 1:
-                imageView.setImageResource(R.drawable.test_back2);
-                break;
-            case 2:
-                imageView.setImageResource(R.drawable.test_back);
-                break;
-        }
-
-    }
-
-    @Override
-    public void onItemMove(int fromPosition, int toPosition) {
-        swapPositions(fromPosition, toPosition);
-//        notifyItemMoved(fromPosition, toPosition);
-        super.onItemMove(fromPosition, toPosition);
-    }
-
-    @Override
-    public void onItemDismiss(int position) {
-        remove(position);
-        // notifyItemRemoved(position);
-//        notifyDataSetChanged();
-        super.onItemDismiss(position);
-    }
-//
-//    private int getRandomColor() {
-//        SecureRandom rgen = new SecureRandom();
-//        return Color.HSVToColor(150, new float[]{
-//                rgen.nextInt(359), 1, 1
-//        });
-//    }
-
-    public void setOnDragStartListener(OnStartDragListener dragStartListener) {
-        mDragStartListener = dragStartListener;
-
-    }
-
-
-    public class SimpleAdapterViewHolder extends UltimateRecyclerviewViewHolder {
-
-        TextView textViewSample;
-        ImageView imageViewSample;
-        ProgressBar progressBarSample;
-        View item_view;
-
-        public  SimpleAdapterViewHolder(View itemView, boolean isItem) {
-            super(itemView);
-//            itemView.setOnTouchListener(new SwipeDismissTouchListener(itemView, null, new SwipeDismissTouchListener.DismissCallbacks() {
-//                @Override
-//                public boolean canDismiss(Object token) {
-//                    Logs.d("can dismiss");
-//                    return true;
-//                }
-//
-//                @Override
-//                public void onDismiss(View view, Object token) {
-//                   // Logs.d("dismiss");
-//                    remove(getPosition());
-//
-//                }
-//            }));
-            if (isItem) {
-                textViewSample = (TextView) itemView.findViewById(
-                        R.id.textview);
-                imageViewSample = (ImageView) itemView.findViewById(R.id.imageview);
-                progressBarSample = (ProgressBar) itemView.findViewById(R.id.progressbar);
-                progressBarSample.setVisibility(View.GONE);
-                item_view = itemView.findViewById(R.id.itemview);
-            }
-
-        }
-
-        @Override
-        public void onItemSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY);
-        }
-
-        @Override
-        public void onItemClear() {
-            itemView.setBackgroundColor(0);
-        }
-    }
-
-    public String getItem(int position) {
-        if (customHeaderView != null)
-            position--;
-        if (position < stringList.size())
-            return stringList.get(position);
-        else return "";
-    }
 
 }
