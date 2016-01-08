@@ -17,7 +17,6 @@ public class MoodRating {
     private Long scope;
     private java.util.Date day;
     private Long timestamp;
-    private String name;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -39,13 +38,12 @@ public class MoodRating {
         this.id = id;
     }
 
-    public MoodRating(Long id, Integer rating, Long scope, java.util.Date day, Long timestamp, String name) {
+    public MoodRating(Long id, Integer rating, Long scope, java.util.Date day, Long timestamp) {
         this.id = id;
         this.rating = rating;
         this.scope = scope;
         this.day = day;
         this.timestamp = timestamp;
-        this.name = name;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -92,14 +90,6 @@ public class MoodRating {
 
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     /** To-one relationship, resolved on first access. */

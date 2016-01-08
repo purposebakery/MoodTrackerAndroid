@@ -54,6 +54,7 @@ public class MoodScopeAdapter extends DragSortAdapter<MoodScopeAdapter.MainViewH
         return data.get(position).getId();
     }
 
+    /*
     protected static int convertToOriginalPosition(int position, int dragInitial, int dragCurrent) {
         if (dragInitial < 0 || dragCurrent < 0) {
             // not dragging
@@ -77,7 +78,7 @@ public class MoodScopeAdapter extends DragSortAdapter<MoodScopeAdapter.MainViewH
                 }
             }
         }
-    }
+    }*/
 
     @Override
     public int getItemCount() {

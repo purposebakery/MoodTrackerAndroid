@@ -20,7 +20,7 @@ import java.util.List;
 public class MoodScopeActivity extends AppCompatActivity {
 
     UltimateRecyclerView ultimateRecyclerView;
-    MoodScopeDragAdapter adapter = null;
+    MoodScopeAdapter adapter = null;
     LinearLayoutManager linearLayoutManager;
 
     ExtendedMoodScopeDao extendedMoodScopeDao;
@@ -58,7 +58,7 @@ public class MoodScopeActivity extends AppCompatActivity {
 
         List<MoodScope> data = extendedMoodScopeDao.getAllMoodScopes();
 
-        adapter = new MoodScopeDragAdapter(ultimateRecyclerView, data);
+        adapter = new MoodScopeAdapter(ultimateRecyclerView, data);
 
         linearLayoutManager = new LinearLayoutManager(this);
 

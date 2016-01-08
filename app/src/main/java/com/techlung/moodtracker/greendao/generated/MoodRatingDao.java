@@ -31,7 +31,6 @@ public class MoodRatingDao extends AbstractDao<MoodRating, Long> {
         public final static Property Scope = new Property(2, Long.class, "scope", false, "SCOPE");
         public final static Property Day = new Property(3, java.util.Date.class, "day", false, "DAY");
         public final static Property Timestamp = new Property(4, Long.class, "timestamp", false, "TIMESTAMP");
-        public final static Property Name = new Property(5, String.class, "name", false, "NAME");
     };
 
     private DaoSession daoSession;
@@ -54,8 +53,7 @@ public class MoodRatingDao extends AbstractDao<MoodRating, Long> {
                 "\"RATING\" INTEGER," + // 1: rating
                 "\"SCOPE\" INTEGER," + // 2: scope
                 "\"DAY\" INTEGER," + // 3: day
-                "\"TIMESTAMP\" INTEGER," + // 4: timestamp
-                "\"NAME\" TEXT UNIQUE );"); // 5: name
+                "\"TIMESTAMP\" INTEGER);"); // 4: timestamp
     }
 
     /** Drops the underlying database table. */
@@ -93,11 +91,6 @@ public class MoodRatingDao extends AbstractDao<MoodRating, Long> {
         if (timestamp != null) {
             stmt.bindLong(5, timestamp);
         }
- 
-        String name = entity.getName();
-        if (name != null) {
-            stmt.bindString(6, name);
-        }
     }
 
     @Override
@@ -120,8 +113,7 @@ public class MoodRatingDao extends AbstractDao<MoodRating, Long> {
             cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1), // rating
             cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // scope
             cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)), // day
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // timestamp
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // name
+            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4) // timestamp
         );
         return entity;
     }
@@ -134,7 +126,6 @@ public class MoodRatingDao extends AbstractDao<MoodRating, Long> {
         entity.setScope(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
         entity.setDay(cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)));
         entity.setTimestamp(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
-        entity.setName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
      }
     
     /** @inheritdoc */

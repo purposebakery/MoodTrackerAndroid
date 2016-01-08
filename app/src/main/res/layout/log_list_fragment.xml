@@ -4,11 +4,12 @@
     android:layout_height="match_parent"
     tools:context=".logbook.LogListFragment">
 
-    <CalendarView
+    <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/calendarView"
-        android:layout_gravity="center" />
+        android:id="@+id/ultimate_recycler_view"
+        >
+    </com.marshalchen.ultimaterecyclerview.UltimateRecyclerView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

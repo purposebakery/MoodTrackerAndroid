@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.techlung.moodtracker.files.FileHandler;
 import com.techlung.moodtracker.greendao.generated.DaoMaster;
+import com.techlung.moodtracker.greendao.generated.LogEntryDao;
+import com.techlung.moodtracker.greendao.generated.MoodRatingDao;
 import com.techlung.moodtracker.greendao.generated.MoodScopeDao;
 
 import java.io.File;
@@ -21,6 +23,8 @@ public class DaoFactory {
 
 
     private ExtendedMoodScopeDao extendedMoodScopeDao;
+    private ExtendedMoodRatingDao extendedMoodRatingDao;
+    private ExtendedLogEntryDao extendedLogEntryDao;
 
     private static DaoFactory instance;
 
@@ -85,6 +89,8 @@ public class DaoFactory {
             daoMaster = null;
 
             extendedMoodScopeDao = null;
+            extendedMoodRatingDao = null;
+            extendedLogEntryDao = null;
         }
     }
 
@@ -95,6 +101,8 @@ public class DaoFactory {
 
         try {
             getExtendedMoodScopeDao().deleteAll();
+            getExtendedMoodRatingDao().deleteAll();
+            getExtendedLogEntryDao().deleteAll();
 
             db.setTransactionSuccessful();
         } catch (Exception ex) {
@@ -119,4 +127,21 @@ public class DaoFactory {
         }
         return extendedMoodScopeDao;
     }
+
+    public ExtendedMoodRatingDao getExtendedMoodRatingDao() {
+        if (extendedMoodRatingDao == null) {
+            MoodRatingDao moodRatingDao = daoMaster.newSession().getMoodRatingDao();
+            extendedMoodRatingDao = new ExtendedMoodRatingDao(moodRatingDao);
+        }
+        return extendedMoodRatingDao;
+    }
+
+    public ExtendedLogEntryDao getExtendedLogEntryDao() {
+        if (extendedLogEntryDao == null) {
+            LogEntryDao logEntryDao = daoMaster.newSession().getLogEntryDao();
+            extendedLogEntryDao = new ExtendedLogEntryDao(logEntryDao);
+        }
+        return extendedLogEntryDao;
+    }
+
 }

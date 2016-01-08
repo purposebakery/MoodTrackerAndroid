@@ -37,6 +37,8 @@
     <string name="first_start_what_is_your_name">What is your name?</string>
     <string name="first_start_what_is_your_name_hint">Name</string>
 
+    <!-- Tracking -->
+    <string name="tracking_summary">Summary</string>
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>

@@ -70,7 +70,6 @@ public class MoodTrackerDaoGenerator {
         mr.addLongProperty("timestamp");
 
         mr.addToOne(moodScope, scope);
-        mr.addStringProperty("name").unique();
 
         return mr;
     }
