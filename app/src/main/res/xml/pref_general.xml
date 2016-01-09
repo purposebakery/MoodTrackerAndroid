@@ -10,7 +10,7 @@
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="@string/pref_title_display_name" />
+        android:title="@string/pref_general_display_name" />
 
 
 </PreferenceScreen>

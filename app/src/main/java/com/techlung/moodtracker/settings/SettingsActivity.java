@@ -2,6 +2,7 @@ package com.techlung.moodtracker.settings;
 
 
 import android.annotation.TargetApi;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -10,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -19,9 +21,13 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TimePicker;
 
 import com.techlung.moodtracker.R;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -205,7 +211,43 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            final Preference preferenceTop = findPreference(Preferences.NOTIFICATION_TIME);
+            //final EditText editText = preference.getEditText();
+            //setTime(editText, Preferences.getNotificationTimeHour(), Preferences.getNotificationTimeMinute());
+
+            preferenceTop.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    TimePickerDialog tpd = new TimePickerDialog(NotificationPreferenceFragment.this.getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            Preferences.setNotificationTimeHour(hourOfDay);
+                            Preferences.setNotificationTimeMinute(minute);
+
+                            Preferences.setNotificationTime(getEntireTime(hourOfDay, minute));
+                            preferenceTop.setSummary(Preferences.getNotificationTime());
+
+                        }
+                    }, Preferences.getNotificationTimeHour(), Preferences.getNotificationTimeMinute(), true);
+
+                    tpd.show();
+
+                    return false;
+                }
+            });
+
+            bindPreferenceSummaryToValue(preferenceTop);
+        }
+
+        private String getEntireTime(int hour, int minute) {
+            DecimalFormat format = new DecimalFormat("00");
+            String hourStr = format.format(hour);
+            String minuteStr = format.format(minute);
+            return hourStr + ":" + minuteStr;
+        }
+
+        private void setTime(EditText editText, int hour, int minute) {
+            editText.setText(getEntireTime(hour, minute));
         }
 
         @Override
