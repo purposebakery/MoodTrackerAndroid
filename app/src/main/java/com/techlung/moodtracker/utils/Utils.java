@@ -22,6 +22,15 @@ public class Utils {
         return calendar.getTime();
     }
 
+    public static Date getAddOneDay(Date date) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+
+        calendar.add(Calendar.HOUR, 24);
+
+        return calendar.getTime();
+    }
+
     public static long getCurrentTimestamp() {
         return (new Date()).getTime();
     }

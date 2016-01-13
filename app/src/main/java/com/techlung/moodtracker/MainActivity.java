@@ -40,6 +40,9 @@ public class MainActivity extends BaseActivity
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
+    public static String OPEN_TRACKING = "OPEN_TRACKING";
+    private boolean openTracking = false;
+
     private static MainActivity instance;
 
     public static MainActivity getInstance() {
@@ -51,6 +54,8 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
         instance = this;
+        openTracking = getIntent().getBooleanExtra(OPEN_TRACKING, false);
+
         setContentView(R.layout.main_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -208,6 +213,7 @@ public class MainActivity extends BaseActivity
                 case 0:
                     if (trackingFragment == null) {
                         trackingFragment = new TrackingFragment();
+                        trackingFragment.setOpenTracking(openTracking);
                     }
                     return trackingFragment;
                 case 1:

@@ -14,7 +14,6 @@ public class ExtendedMoodScopeDao {
         this.dao = moodScopeDao;
     }
 
-
     public List<MoodScope> getAllMoodScopes() {
         QueryBuilder<MoodScope> queryBuilder = dao.queryBuilder();
         queryBuilder.orderAsc(MoodScopeDao.Properties.Sequence);

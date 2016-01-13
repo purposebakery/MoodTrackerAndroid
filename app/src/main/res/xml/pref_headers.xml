@@ -13,8 +13,8 @@
         android:title="@string/pref_header_notifications" />
 
     <header
-        android:fragment="com.techlung.moodtracker.settings.SettingsActivity$DataSyncPreferenceFragment"
-        android:icon="@drawable/ic_sync_black_24dp"
-        android:title="@string/pref_header_data_sync" />
+        android:fragment="com.techlung.moodtracker.settings.SettingsActivity$TrackingPreferenceFragment"
+        android:icon="@drawable/ic_insert_chart"
+        android:title="@string/pref_header_tracking" />
 
 </preference-headers>

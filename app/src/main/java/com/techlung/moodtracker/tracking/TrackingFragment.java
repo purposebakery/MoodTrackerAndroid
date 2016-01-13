@@ -14,7 +14,9 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
 import com.techlung.moodtracker.R;
 import com.techlung.moodtracker.greendao.extended.DaoFactory;
 import com.techlung.moodtracker.greendao.extended.ExtendedMoodRatingDao;
@@ -38,7 +40,10 @@ public class TrackingFragment extends Fragment {
 
     int moodScopesCount;
 
+    private LineChart chartAverage;
+
     TextView infos;
+    boolean openTracking;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +69,12 @@ public class TrackingFragment extends Fragment {
         });
 
         infos = (TextView) root.findViewById(R.id.infos);
+
+        if (openTracking) {
+            getTrackingSummary();
+        }
+
+
 
         return root;
     }
@@ -142,6 +153,36 @@ public class TrackingFragment extends Fragment {
     private List<MoodRating> initCurrentDayMoodRatings(Context context, List<MoodScope> moodScopes, Date currentDay) {
         ExtendedMoodRatingDao extendedMoodRatingDao = DaoFactory.getInstance(context).getExtendedMoodRatingDao();
 
+        // Init previous days
+        Date lastTrackedDay = extendedMoodRatingDao.getLastTrackedDayBefore(currentDay);
+        if (lastTrackedDay != null) {
+            List<MoodRating> lastRatings = extendedMoodRatingDao.getAllMoodRatingByDay(lastTrackedDay);
+
+            Date nextDay = lastTrackedDay;
+            nextDay = Utils.getAddOneDay(nextDay);
+            int counter = 0;
+
+            while (nextDay.getTime() != currentDay.getTime()) {
+                counter++;
+                for (MoodRating rating : lastRatings) {
+                    MoodRating newRating = new MoodRating();
+                    newRating.setScope(rating.getScope());
+                    newRating.setDay(nextDay);
+                    newRating.setRating(rating.getRating());
+                    newRating.setTimestamp(Utils.getCurrentTimestamp());
+
+                    extendedMoodRatingDao.insertOrReplace(newRating);
+                }
+
+                nextDay = Utils.getAddOneDay(nextDay);
+            }
+
+            if (counter < 0) {
+                Toast.makeText(getActivity(), String.format(getString(R.string.tracking_initialized_missed_days), counter), Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // Init current day
         List<MoodRating> ratings = new ArrayList<MoodRating>();
         for (MoodScope scope : moodScopes) {
             MoodRating rating = new MoodRating();
@@ -158,4 +199,11 @@ public class TrackingFragment extends Fragment {
         return ratings;
     }
 
+    public boolean isOpenTracking() {
+        return openTracking;
+    }
+
+    public void setOpenTracking(boolean openTracking) {
+        this.openTracking = openTracking;
+    }
 }

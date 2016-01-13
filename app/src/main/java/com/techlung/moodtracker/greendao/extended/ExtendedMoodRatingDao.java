@@ -9,6 +9,8 @@ import java.util.List;
 import de.greenrobot.dao.query.QueryBuilder;
 
 public class ExtendedMoodRatingDao {
+    private static final long MOOD_RATING_AVERAGE_SCOPE_ID = 0;
+
     public MoodRatingDao dao;
 
     public ExtendedMoodRatingDao(MoodRatingDao moodRatingDao) {
@@ -21,6 +23,19 @@ public class ExtendedMoodRatingDao {
         return queryBuilder.list();
     }
 
+    public Date getLastTrackedDayBefore(Date day) {
+        QueryBuilder<MoodRating> queryBuilder = dao.queryBuilder();
+        queryBuilder.where(MoodRatingDao.Properties.Day.lt(day));
+        queryBuilder.orderDesc(MoodRatingDao.Properties.Day);
+        List<MoodRating> ratings = queryBuilder.list();
+
+        if (ratings == null || ratings.isEmpty()) {
+            return null;
+        } else {
+            Date lastTrackedDay = ratings.get(0).getDay();
+            return lastTrackedDay;
+        }
+    }
 
     public List<MoodRating> getAllMoodRatingByDay(Date day) {
         QueryBuilder<MoodRating> queryBuilder = dao.queryBuilder();
@@ -29,6 +44,12 @@ public class ExtendedMoodRatingDao {
     }
 
     public MoodRating getMoodRatingById(Long id) {
+        QueryBuilder<MoodRating> queryBuilder = dao.queryBuilder();
+        queryBuilder.where(MoodRatingDao.Properties.Id.eq(id));
+        return queryBuilder.unique();
+    }
+
+    public void updateMoodRatingAverage(Date day) {
         QueryBuilder<MoodRating> queryBuilder = dao.queryBuilder();
         queryBuilder.where(MoodRatingDao.Properties.Id.eq(id));
         return queryBuilder.unique();

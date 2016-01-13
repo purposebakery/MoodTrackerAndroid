@@ -1,5 +1,8 @@
 package com.techlung.moodtracker.settings;
 
+import android.content.Context;
+import android.content.ContextWrapper;
+
 import com.pixplicity.easyprefs.library.Prefs;
 
 public class Preferences {
@@ -11,6 +14,9 @@ public class Preferences {
     public static final String NOTIFICATION_TIME = "NOTIFICATION_TIME";
     public static final String NOTIFICATION_TIME_HOUR = "NOTIFICATION_TIME_HOUR";
     public static final String NOTIFICATION_TIME_MINUTE = "NOTIFICATION_TIME_MINUTE";
+    public static final String TRACKING_HISTORY_LENGTH = "TRACKING_HISTORY_LENGTH";
+
+    private static boolean isInited = false;
 
     public static boolean isFirstStartup() {
         return Prefs.getBoolean(FIRST_START, true);
@@ -18,7 +24,6 @@ public class Preferences {
     public static void setFirstStart(boolean firstStart) {
         Prefs.putBoolean(FIRST_START, firstStart);
     }
-
 
     public static String getUserName() {
         return Prefs.getString(USER_NAME, "");
@@ -54,6 +59,28 @@ public class Preferences {
     }
     public static void setNotificationTimeMinute(int notificationTimeMinute) {
         Prefs.putInt(NOTIFICATION_TIME_MINUTE, notificationTimeMinute);
+    }
+
+    public static String getTrackingHistoryLength() {
+        return Prefs.getString(TRACKING_HISTORY_LENGTH, "10");
+    }
+    public static void setTrackingHistoryLength(String length) {
+        Prefs.putString(TRACKING_HISTORY_LENGTH, length);
+    }
+
+    public static void initPreferences(Context context) {
+        if (isInited) {
+            return;
+        }
+
+        isInited = true;
+
+        new Prefs.Builder()
+                .setContext(context)
+                .setMode(ContextWrapper.MODE_PRIVATE)
+                .setPrefsName(context.getPackageName())
+                .setUseDefaultSharedPreference(true)
+                .build();
     }
 
 }

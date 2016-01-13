@@ -4,16 +4,17 @@
     android:layout_height="match_parent"
     tools:context=".tracking.TrackingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="TRACKING" />
-
     <TextView
         android:id="@+id/infos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chartAverage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/infos" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
