@@ -43,17 +43,19 @@ public class ExtendedMoodRatingDao {
         return queryBuilder.list();
     }
 
+    public List<MoodRating> getMoodRatingRange(Date start, Date end) {
+        QueryBuilder<MoodRating> queryBuilder = dao.queryBuilder();
+        queryBuilder.where(MoodRatingDao.Properties.Day.ge(start));
+        queryBuilder.where(MoodRatingDao.Properties.Day.le(end));
+        return queryBuilder.list();
+    }
+
     public MoodRating getMoodRatingById(Long id) {
         QueryBuilder<MoodRating> queryBuilder = dao.queryBuilder();
         queryBuilder.where(MoodRatingDao.Properties.Id.eq(id));
         return queryBuilder.unique();
     }
 
-    public void updateMoodRatingAverage(Date day) {
-        QueryBuilder<MoodRating> queryBuilder = dao.queryBuilder();
-        queryBuilder.where(MoodRatingDao.Properties.Id.eq(id));
-        return queryBuilder.unique();
-    }
 
 
     public long getCount() {

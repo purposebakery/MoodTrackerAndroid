@@ -5,6 +5,7 @@ package com.techlung.moodtracker.tracking;
  */
 public class Rating {
 
+    public static final int UNDEFINED = 0;
     public static final int VERY_LOW = 1;
     public static final int LOW = 2;
     public static final int NORMAL = 3;

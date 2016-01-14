@@ -40,6 +40,11 @@ public class Utils {
         return format.format(date);
     }
 
+    public static String formatDateShort(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM");
+        return format.format(date);
+    }
+
     public static Date parseDate(String date) {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         try {

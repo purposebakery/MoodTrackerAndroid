@@ -4,4 +4,40 @@
     <color name="colorPrimary">#3f51b5</color>
     <color name="colorPrimaryDark">#303f9f</color>
     <color name="colorAccent">#ff9800</color>
+
+    <color name="red">#f44336</color>
+    <color name="pink">#e91e63</color>
+    <color name="purple">#9c27b0</color>
+    <color name="deeppurple">#673ab7</color>
+    <color name="indigo">#3f51b5</color>
+    <color name="blue">#2196f3</color>
+    <color name="lightblue">#03a9f4</color>
+    <color name="cyan">#00bcd4</color>
+    <color name="teal">#009688</color>
+    <color name="green">#4caf50</color>
+    <color name="lightgreen">#8bc34a</color>
+    <color name="lime">#cddc39</color>
+    <color name="yellow">#ffeb3b</color>
+    <color name="amber">#ffc107</color>
+    <color name="orange">#ff9800</color>
+    <color name="deeporange">#ff5722</color>
+
+    <array name="rainbow">
+        <item>@color/red</item>
+        <item>@color/pink</item>
+        <item>@color/purple</item>
+        <item>@color/deeppurple</item>
+        <item>@color/indigo</item>
+        <item>@color/blue</item>
+        <item>@color/lightblue</item>
+        <item>@color/cyan</item>
+        <item>@color/teal</item>
+        <item>@color/green</item>
+        <item>@color/lightgreen</item>
+        <item>@color/lime</item>
+        <item>@color/yellow</item>
+        <item>@color/amber</item>
+        <item>@color/orange</item>
+        <item>@color/deeporange</item>
+    </array>
 </resources>

@@ -4,17 +4,41 @@
     android:layout_height="match_parent"
     tools:context=".tracking.TrackingFragment">
 
-    <TextView
-        android:id="@+id/infos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chartAverage"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/infos" />
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:id="@+id/infos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartAverage"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_below="@+id/infos"
+                android:layout_marginTop="16dp" />
+
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartScopes"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_below="@+id/chartAverage"
+                android:layout_marginTop="16dp" />
+
+
+        </RelativeLayout>
+
+    </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
