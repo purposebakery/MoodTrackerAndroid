@@ -20,7 +20,7 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
     <string name="title_tab_tracking">TRACKING</string>
-    <string name="title_tab_logbook">LOGBOOK</string>
+    <string name="title_tab_logbook">DIARY</string>
 
     <string name="title_activity_moodscopes">Moodscopes</string>
     <string name="title_activity_settings">Settings</string>

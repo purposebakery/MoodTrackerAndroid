@@ -3,6 +3,7 @@ package com.techlung.moodtracker;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.DynamicDrawableSpan;
+import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -79,10 +84,26 @@ public class MainActivity extends BaseActivity
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        try {
+            tabLayout.getTabAt(0).setIcon(R.drawable.ic_assessment_white);
+            tabLayout.getTabAt(0).setText(null);
+            tabLayout.getTabAt(1).setIcon(R.drawable.ic_book_white);
+            tabLayout.getTabAt(1).setText(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         checkAndDoFirstStart();
         setUserToUi();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mSectionsPagerAdapter != null && mSectionsPagerAdapter.getTrackingFragment() != null) {
+            mSectionsPagerAdapter.getTrackingFragment().updateUi();
+        }
     }
 
     @Override
@@ -131,13 +152,13 @@ public class MainActivity extends BaseActivity
             startActivity(intent);
         } else if (id == R.id.nav_import) {
             // TODO Import
-            Toast.makeText(this, "TODO Import", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Import coming up :)", Toast.LENGTH_LONG).show();
         } else if (id == R.id.nav_export) {
             // TODO Export
-            Toast.makeText(this, "TODO Export", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Export coming up :)", Toast.LENGTH_LONG).show();
         } else if (id == R.id.nav_share) {
             // TODO Share
-            Toast.makeText(this, "TODO Share", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Share coming up :)", Toast.LENGTH_LONG).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -235,11 +256,19 @@ public class MainActivity extends BaseActivity
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return MainActivity.this.getString(R.string.title_tab_tracking);
+                    return  MainActivity.this.getString(R.string.title_tab_tracking);
                 case 1:
                     return MainActivity.this.getString(R.string.title_tab_logbook);
             }
             return null;
+        }
+
+        public LogListFragment getLogListFragment() {
+            return logListFragment;
+        }
+
+        public TrackingFragment getTrackingFragment() {
+            return trackingFragment;
         }
     }
 }

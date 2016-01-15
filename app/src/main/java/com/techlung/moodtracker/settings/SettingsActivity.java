@@ -93,6 +93,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     };
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            //startActivity(new Intent(getActivity(), SettingsActivity.class));
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Helper method to determine if the device has an extra-large screen. For
      * example, 10" tablets are extra-large.
@@ -195,7 +206,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                //startActivity(new Intent(getActivity(), SettingsActivity.class));
+                getActivity().onBackPressed();
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -257,7 +269,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                //startActivity(new Intent(getActivity(), SettingsActivity.class));
+                getActivity().onBackPressed();
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -280,14 +293,28 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+            Preference trackingHistoryLength = findPreference("TRACKING_HISTORY_LENGTH");
+            trackingHistoryLength.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+            String[] titles = trackingHistoryLength.getContext().getResources().getStringArray(R.array.pref_tracking_history_length_titles);
+            String[] values = trackingHistoryLength.getContext().getResources().getStringArray(R.array.pref_tracking_history_length_values);
+            String value = Preferences.getTrackingHistoryLength();
+            String title = "";
+            for (int i = 0; i < values.length; ++i) {
+                if (value.equals(values[i])) {
+                    title = titles[i];
+                }
+            }
+
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(trackingHistoryLength, title);
+            trackingHistoryLength.setSummary(title);
         }
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                //startActivity(new Intent(getActivity(), SettingsActivity.class));
+                getActivity().onBackPressed();
                 return true;
             }
             return super.onOptionsItemSelected(item);

@@ -34,20 +34,26 @@ public class NotificationManager {
     }
 
     private static void toastNextNotificationTime(long time, Context context) {
-        DateFormat format = new SimpleDateFormat("EEEE dd.MM.yyyy", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("EEEE dd.MM.yyyy", Locale.getDefault());
         Date date = new Date();
         date.setTime(time);
 
-        Toast.makeText(context, "Next Notification: " + format.format(date), Toast.LENGTH_SHORT);
+        Toast.makeText(context, "Next Notification: " + format.format(date), Toast.LENGTH_LONG).show();
     }
 
     private static long getNextNotificationTime() {
         Calendar calendar = new GregorianCalendar();
         long now = (new Date()).getTime();
-        long tomorrow = 1000 * 60 * 60 * 24;
-        calendar.setTime(new Date(tomorrow));
+        calendar.setTime(new Date(now));
         calendar.set(Calendar.HOUR_OF_DAY, Preferences.getNotificationTimeHour());
         calendar.set(Calendar.MINUTE, Preferences.getNotificationTimeMinute());
+
+        if (calendar.getTime().getTime() <= now) {
+            long day = 1000 * 60 * 60 * 24;
+            calendar.setTime(new Date(now + day));
+            calendar.set(Calendar.HOUR_OF_DAY, Preferences.getNotificationTimeHour());
+            calendar.set(Calendar.MINUTE, Preferences.getNotificationTimeMinute());
+        }
         return calendar.getTimeInMillis();
         //return (new Date()).getTime() + 1000*60*2;
     }

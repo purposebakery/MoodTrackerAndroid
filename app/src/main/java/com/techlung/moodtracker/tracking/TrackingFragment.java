@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,11 +58,9 @@ public class TrackingFragment extends Fragment {
     List<MoodScope> moodScopes;
     HashMap<Long, MoodScope> moodScopeMap;
 
-
     private LineChart chartAverage;
     private LineChart chartScopes;
 
-    TextView infos;
     boolean openTracking;
 
     @Override
@@ -94,7 +93,6 @@ public class TrackingFragment extends Fragment {
 
         chartAverage = (LineChart) root.findViewById(R.id.chartAverage);
         chartScopes = (LineChart) root.findViewById(R.id.chartScopes);
-        infos = (TextView) root.findViewById(R.id.infos);
 
         if (openTracking) {
             getTrackingSummary();
@@ -170,11 +168,17 @@ public class TrackingFragment extends Fragment {
 
     }
 
-    private void updateUi() {
+    public void updateUi() {
         int historyLength = Integer.parseInt(Preferences.getTrackingHistoryLength());
         Date today = Utils.getCurrentDay();
-        long timediff = 1000 * 60 * 60 * 24 * historyLength;
+        long timediff = 1000l * 60l * 60l * 24l * (long)historyLength;
         Date historyStart = new Date(today.getTime() - timediff);
+
+
+        Log.d("TAG1", ""+ historyLength);
+        Log.d("TAG2", ""+ today);
+        Log.d("TAG3", ""+ timediff);
+        Log.d("TAG4", ""+ historyStart);
 
         moodScopes.clear();
         moodScopes.addAll(extendedMoodScopeDao.getAllMoodScopes());
@@ -268,6 +272,7 @@ public class TrackingFragment extends Fragment {
         ArrayList<LineDataSet> averageDataSets = new ArrayList<LineDataSet>();
         averageDataSets.add(averageSet); // add the datasets
 
+        Log.d("DAYS", "" + days.size());
         LineData averageData = new LineData(days, averageDataSets);
         chartAverage.setData(averageData);
         chartAverage.animateX(ANIMATION_DURATION, Easing.EasingOption.EaseInOutQuart);
