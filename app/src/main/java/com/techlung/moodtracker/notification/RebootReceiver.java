@@ -16,6 +16,6 @@ public class RebootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Preferences.initPreferences(context);
 
-        NotificationManager.setNextNotification(context, true);
+        NotificationManager.setNextNotification(context, false);
     }
 }

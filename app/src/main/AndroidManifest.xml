@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.techlung.moodtracker">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -29,6 +31,17 @@
             android:screenOrientation="portrait"
             android:parentActivityName="com.techlung.moodtracker.MainActivity"
             android:label="@string/title_activity_settings"/>
+
+        <receiver
+            android:name=".notification.AlarmReceiver"
+            android:enabled="true"></receiver>
+        <receiver
+            android:name=".notification.RebootReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

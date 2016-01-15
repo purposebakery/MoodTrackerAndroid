@@ -35,6 +35,7 @@ import com.techlung.moodtracker.greendao.extended.ExtendedMoodScopeDao;
 import com.techlung.moodtracker.greendao.generated.MoodScope;
 import com.techlung.moodtracker.logbook.LogListFragment;
 import com.techlung.moodtracker.modescope.MoodScopeActivity;
+import com.techlung.moodtracker.notification.NotificationManager;
 import com.techlung.moodtracker.settings.Preferences;
 import com.techlung.moodtracker.settings.SettingsActivity;
 import com.techlung.moodtracker.tracking.TrackingFragment;
@@ -75,7 +76,7 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+        // primary sections of the activity.s
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
@@ -182,17 +183,20 @@ public class MainActivity extends BaseActivity
                     String userName = input.getText().toString().trim();
 
                     Preferences.setUserName(userName);
-                    setUserToUi();
-                    initDatabase();
-                    Preferences.setFirstStart(false);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle(String.format(getString(R.string.first_start_welcome), userName));
                     builder.setMessage(R.string.first_start_welcome_message);
+                    builder.setCancelable(false);
                     builder.setPositiveButton(R.string.alert_thanks, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+
+                            setUserToUi();
+                            initDatabase();
+                            Preferences.setFirstStart(false);
+                            NotificationManager.setNextNotification(MainActivity.this, true);
                         }
                     });
                     builder.show();
