@@ -12,5 +12,14 @@
         android:positiveButtonText="@null"
         android:title="@string/pref_tracking_history_length" />
 
+    <ListPreference
+        android:defaultValue="ONE_AT_A_TIME"
+        android:entries="@array/pref_tracking_method_titles"
+        android:entryValues="@array/pref_tracking_method_values"
+        android:key="TRACKING_METHOD"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_tracking_method" />
+
 
 </PreferenceScreen>

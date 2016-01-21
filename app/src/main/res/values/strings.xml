@@ -6,6 +6,9 @@
     <string name="alert_thanks">Thanks</string>
     <string name="alert_error">Error</string>
     <string name="alert_warning">Warning</string>
+    <string name="alert_next">Next</string>
+    <string name="alert_done">Done</string>
+    <string name="alert_close_app">Close app</string>
 
     <string name="app_name">MoodTracker</string>
     <string name="action_settings">Settings</string>
@@ -43,6 +46,7 @@
     <string name="log_add_input_error_empty">Empty input</string>
 
     <!-- Tracking -->
+    <string name="tracking_wizard_title">Scope rating</string>
     <string name="tracking_summary">Summary</string>
     <string name="tracking_initialized_missed_days">Initialized %1$d missed days.</string>
 
@@ -58,14 +62,14 @@
 
     <string name="pref_tracking_history_length">History length</string>
     <string-array name="pref_tracking_history_length_titles">
-    <item>5 days</item>
-    <item>10 days</item>
-    <item>15 days</item>
-    <item>20 days</item>
-    <item>1 month</item>
-    <item>2 months</item>
-    <item>6 months</item>
-</string-array>
+        <item>5 days</item>
+        <item>10 days</item>
+        <item>15 days</item>
+        <item>20 days</item>
+        <item>1 month</item>
+        <item>2 months</item>
+        <item>6 months</item>
+    </string-array>
     <string-array name="pref_tracking_history_length_values">
         <item>5</item>
         <item>10</item>
@@ -76,55 +80,29 @@
         <item>150</item>
     </string-array>
 
+    <string name="pref_tracking_method">Tracking method</string>
+    <string-array name="pref_tracking_method_titles">
+        <item>Rate all scopes at once</item>
+        <item>Rate one scope at a time</item>
+    </string-array>
+    <string-array name="pref_tracking_method_values">
+        <item>ALL_AT_ONCE</item>
+        <item>ONE_AT_A_TIME</item>
+    </string-array>
+
     <!-- Notification -->
     <string name="notification_title">Mood Tracker</string>
     <string name="notification_message">Remember to track your mood</string>
 
+    <!-- Share -->
+    <string name="share_app_title">Share App</string>
+    <string name="share_app_text">Mood tracker for android: </string>
+    <string name="share_app_url">http://play.google.com/store/apps/details?id=com.techlung.moodtracker</string>
 
-
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
-
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
+    <!-- IO -->
+    <string name="io_export_fail">Export failed... Sorry :(</string>
+    <string name="io_export_success">Export succeeded!</string>
+    <string name="io_import_fail">Oh no... Import failed :(</string>
+    <string name="io_import_success">Import succeeded!</string>
 
 </resources>

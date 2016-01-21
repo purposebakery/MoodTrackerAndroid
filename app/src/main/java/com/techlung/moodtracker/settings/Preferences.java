@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 
 import com.pixplicity.easyprefs.library.Prefs;
+import com.techlung.moodtracker.enums.TrackingMethod;
 
 public class Preferences {
 
@@ -15,6 +16,7 @@ public class Preferences {
     public static final String NOTIFICATION_TIME_HOUR = "NOTIFICATION_TIME_HOUR";
     public static final String NOTIFICATION_TIME_MINUTE = "NOTIFICATION_TIME_MINUTE";
     public static final String TRACKING_HISTORY_LENGTH = "TRACKING_HISTORY_LENGTH";
+    public static final String TRACKING_METHOD = "TRACKING_METHOD";
 
     private static boolean isInited = false;
 
@@ -66,6 +68,14 @@ public class Preferences {
     }
     public static void setTrackingHistoryLength(String length) {
         Prefs.putString(TRACKING_HISTORY_LENGTH, length);
+    }
+
+    public static TrackingMethod getTrackingMethod() {
+        return TrackingMethod.valueOf(Prefs.getString(TRACKING_METHOD, TrackingMethod.ONE_AT_A_TIME.name()));
+    }
+
+    public static void setTrackingMethod(TrackingMethod method) {
+        Prefs.putString(TRACKING_METHOD, method.name());
     }
 
     public static void initPreferences(Context context) {

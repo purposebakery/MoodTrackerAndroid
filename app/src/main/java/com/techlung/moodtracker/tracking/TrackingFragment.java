@@ -12,8 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,8 +26,8 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.DefaultValueFormatter;
 import com.techlung.moodtracker.R;
+import com.techlung.moodtracker.enums.TrackingMethod;
 import com.techlung.moodtracker.greendao.extended.DaoFactory;
 import com.techlung.moodtracker.greendao.extended.ExtendedMoodRatingDao;
 import com.techlung.moodtracker.greendao.extended.ExtendedMoodScopeDao;
@@ -45,8 +45,8 @@ import java.util.Map;
 
 public class TrackingFragment extends Fragment {
 
-    public static final float LINE_WIDTH = 4f;
-    public static final float CIRCLE_SIZE = 7f;
+    public static final float LINE_WIDTH = 2f;
+    public static final float CIRCLE_SIZE = 5f;
     public static final int ANIMATION_DURATION = 2500;
     public static final int FILL_ALPHA = 80;
     public static final float VALUE_TEXT_SIZE = 10f;
@@ -61,7 +61,7 @@ public class TrackingFragment extends Fragment {
     private LineChart chartAverage;
     private LineChart chartScopes;
 
-    boolean openTracking;
+    boolean openTrackingFromExternal;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,15 +87,15 @@ public class TrackingFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getTrackingSummary();
+                getTracking(false);
             }
         });
 
         chartAverage = (LineChart) root.findViewById(R.id.chartAverage);
         chartScopes = (LineChart) root.findViewById(R.id.chartScopes);
 
-        if (openTracking) {
-            getTrackingSummary();
+        if (openTrackingFromExternal) {
+            getTracking(true);
         }
         initChartAverage(chartAverage);
         initChartScopes(chartScopes);
@@ -177,8 +177,8 @@ public class TrackingFragment extends Fragment {
 
         Log.d("TAG1", ""+ historyLength);
         Log.d("TAG2", ""+ today);
-        Log.d("TAG3", ""+ timediff);
-        Log.d("TAG4", ""+ historyStart);
+        Log.d("TAG3", "" + timediff);
+        Log.d("TAG4", "" + historyStart);
 
         moodScopes.clear();
         moodScopes.addAll(extendedMoodScopeDao.getAllMoodScopes());
@@ -263,7 +263,7 @@ public class TrackingFragment extends Fragment {
         averageSet.setCircleColor(Color.BLACK);
         averageSet.setLineWidth(LINE_WIDTH);
         averageSet.setCircleSize(CIRCLE_SIZE);
-        averageSet.setDrawCircleHole(false);
+        averageSet.setDrawCircleHole(true);
         averageSet.setValueTextSize(VALUE_TEXT_SIZE);
         averageSet.setFillAlpha(FILL_ALPHA);
         averageSet.setFillColor(Color.BLACK);
@@ -294,7 +294,7 @@ public class TrackingFragment extends Fragment {
             scopeSet.setCircleColor(color);
             scopeSet.setLineWidth(LINE_WIDTH);
             scopeSet.setCircleSize(CIRCLE_SIZE);
-            scopeSet.setDrawCircleHole(false);
+            scopeSet.setDrawCircleHole(true);
             scopeSet.setValueTextSize(VALUE_TEXT_SIZE);
             scopeSet.setFillAlpha(FILL_ALPHA);
             scopeSet.setFillColor(color);
@@ -357,19 +357,73 @@ public class TrackingFragment extends Fragment {
         // set data
     }
 
-    public void getTrackingSummary() {
+    public void getTracking(boolean withExitButton) {
+        if (Preferences.getTrackingMethod() == TrackingMethod.ALL_AT_ONCE) {
+            getTrackingSummary(withExitButton);
+        } else {
+            getTrackingWizard(withExitButton);
+        }
+    }
+
+    private void getTrackingWizard(boolean withExitButton) {
+        final ExtendedMoodRatingDao extendedMoodRatingDao = DaoFactory.getInstance(getActivity()).getExtendedMoodRatingDao();
+        final List<MoodScope> moodScopes = DaoFactory.getInstance(getActivity()).getExtendedMoodScopeDao().getAllMoodScopes();
+        final List<MoodRating> moodRatings = getCurrentDayMoodRatings(moodScopes);
+
+        getTrackingWizardElement(withExitButton, moodRatings);
+    }
+
+    private void getTrackingWizardElement(final boolean withExitButton, final List<MoodRating> moodRatings) {
+        if (moodRatings.isEmpty()) {
+            getTrackingSummary(withExitButton);
+        } else {
+            MoodRating firstRating = moodRatings.remove(0);
+
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            View root = inflater.inflate(R.layout.tracking_input_summary, null);
+            ListView trackingList = (ListView) root.findViewById(R.id.list);
+            final TextView date = (TextView) root.findViewById(R.id.date);
+            date.setVisibility(View.GONE);
+
+            List<MoodRating> singleRatingList = new ArrayList<MoodRating>();
+            singleRatingList.add(firstRating);
+
+            final TrackingSummaryAdapter adapter = new TrackingSummaryAdapter(getActivity(), R.layout.tracking_input, singleRatingList);
+            trackingList.setAdapter(adapter);
+            trackingList.requestFocus();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.tracking_wizard_title);
+            builder.setView(root);
+
+            int positiveId = moodRatings.isEmpty() ? R.string.alert_done : R.string.alert_next;
+            builder.setPositiveButton(positiveId, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    getTrackingWizardElement(withExitButton, moodRatings);
+                }
+            });
+
+            builder.setNegativeButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.show();
+        }
+    }
+
+    private void getTrackingSummary(boolean withExitButton) {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View root = inflater.inflate(R.layout.tracking_input_summary, null);
         ListView trackingList = (ListView) root.findViewById(R.id.list);
 
         final ExtendedMoodRatingDao extendedMoodRatingDao = DaoFactory.getInstance(getActivity()).getExtendedMoodRatingDao();
         final List<MoodScope> moodScopes = DaoFactory.getInstance(getActivity()).getExtendedMoodScopeDao().getAllMoodScopes();
-        Date currentDay = Utils.getCurrentDay();
-        final List<MoodRating> moodRatings = new ArrayList<MoodRating>();
-        moodRatings.addAll(extendedMoodRatingDao.getAllMoodRatingByDay(currentDay));
-        if (moodRatings.isEmpty()) {
-            moodRatings.addAll(initCurrentDayMoodRatings(getActivity(), moodScopes, currentDay));
-        }
+        final List<MoodRating> moodRatings = getCurrentDayMoodRatings(moodScopes);
         final TrackingSummaryAdapter adapter = new TrackingSummaryAdapter(getActivity(), R.layout.tracking_input, moodRatings);
         trackingList.setAdapter(adapter);
         trackingList.requestFocus();
@@ -417,9 +471,28 @@ public class TrackingFragment extends Fragment {
             }
         });
 
+        if (withExitButton) {
+            builder.setNegativeButton(R.string.alert_close_app, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    getActivity().finish();
+                }
+            });
+        }
+
         builder.setView(root);
 
         builder.show();
+    }
+
+    private List<MoodRating> getCurrentDayMoodRatings(List<MoodScope> moodScopes) {
+        Date currentDay = Utils.getCurrentDay();
+        final List<MoodRating> moodRatings = new ArrayList<MoodRating>();
+        moodRatings.addAll(extendedMoodRatingDao.getAllMoodRatingByDay(currentDay));
+        if (moodRatings.isEmpty()) {
+            moodRatings.addAll(initCurrentDayMoodRatings(getActivity(), moodScopes, currentDay));
+        }
+        return moodRatings;
     }
 
     private List<MoodRating> initCurrentDayMoodRatings(Context context, List<MoodScope> moodScopes, Date currentDay) {
@@ -471,11 +544,11 @@ public class TrackingFragment extends Fragment {
         return ratings;
     }
 
-    public boolean isOpenTracking() {
-        return openTracking;
+    public boolean isOpenTrackingFromExternal() {
+        return openTrackingFromExternal;
     }
 
-    public void setOpenTracking(boolean openTracking) {
-        this.openTracking = openTracking;
+    public void setOpenTrackingFromExternal(boolean openTrackingFromExternal) {
+        this.openTrackingFromExternal = openTrackingFromExternal;
     }
 }
