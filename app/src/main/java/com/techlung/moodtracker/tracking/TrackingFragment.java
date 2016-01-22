@@ -5,7 +5,9 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,13 +21,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.techlung.moodtracker.R;
 import com.techlung.moodtracker.enums.TrackingMethod;
 import com.techlung.moodtracker.greendao.extended.DaoFactory;
@@ -60,6 +68,7 @@ public class TrackingFragment extends Fragment {
 
     private LineChart chartAverage;
     private LineChart chartScopes;
+    private BarChart chartAverageScopes;
 
     boolean openTrackingFromExternal;
 
@@ -93,6 +102,7 @@ public class TrackingFragment extends Fragment {
 
         chartAverage = (LineChart) root.findViewById(R.id.chartAverage);
         chartScopes = (LineChart) root.findViewById(R.id.chartScopes);
+        chartAverageScopes = (BarChart) root.findViewById(R.id.chartAverageScopes);
 
         if (openTrackingFromExternal) {
             getTracking(true);
@@ -100,9 +110,37 @@ public class TrackingFragment extends Fragment {
         initChartAverage(chartAverage);
         initChartScopes(chartScopes);
 
+        initChartAverageScopes(chartAverageScopes);
+
         updateUi();
 
         return root;
+    }
+
+    private void initChartAverageScopes(BarChart chart) {
+        chart.setDrawBarShadow(false);
+
+        chart.setDescription("");
+
+        // scaling can now only be done on x- and y-axis separately
+        chart.setPinchZoom(false);
+        chart.setDrawGridBackground(false);
+
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setSpaceBetweenLabels(2);
+
+        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.setAxisMaxValue(6);
+        leftAxis.setAxisMinValue(0);
+        leftAxis.setStartAtZero(false);
+
+        YAxis rightAxis = chart.getAxisRight();
+        rightAxis.setEnabled(false);
+
+        Legend l = chart.getLegend();
+        l.setEnabled(false);
     }
 
     private void initChartAverage(LineChart chart) {
@@ -173,12 +211,6 @@ public class TrackingFragment extends Fragment {
         Date today = Utils.getCurrentDay();
         long timediff = 1000l * 60l * 60l * 24l * (long)historyLength;
         Date historyStart = new Date(today.getTime() - timediff);
-
-
-        Log.d("TAG1", ""+ historyLength);
-        Log.d("TAG2", ""+ today);
-        Log.d("TAG3", "" + timediff);
-        Log.d("TAG4", "" + historyStart);
 
         moodScopes.clear();
         moodScopes.addAll(extendedMoodScopeDao.getAllMoodScopes());
@@ -309,52 +341,40 @@ public class TrackingFragment extends Fragment {
         chartScopes.setData(scopeData);
         chartScopes.animateX(ANIMATION_DURATION, Easing.EasingOption.EaseInOutQuart);
 
-/*
-        ArrayList<String> xVals = new ArrayList<String>();
-        for (int i = 0; i < count; i++) {
-            xVals.add((i) + "");
+        // Scope Averages
+        ArrayList<String> scopeAverageXVals = new ArrayList<String>();
+        ArrayList<BarEntry> scopeAverageYVals = new ArrayList<BarEntry>();
+        counter = 0;
+        for (Map.Entry<Long, Integer[]> entry : dataMap.entrySet()) {
+            MoodScope scope = moodScopeMap.get(entry.getKey());
+            scopeAverageXVals.add(scope.getName());
+
+            int averageCount = 0;
+            float averageValue = 0;
+
+            for (Integer integer : entry.getValue()) {
+                if (integer != Rating.UNDEFINED) {
+                    averageValue += integer;
+                    averageCount++;
+                }
+            }
+            averageValue /= (float) averageCount;
+            scopeAverageYVals.add(new BarEntry(averageValue, counter));
+
+            counter++;
+
         }
 
-        ArrayList<Entry> yVals = new ArrayList<Entry>();
+        BarDataSet set1 = new BarDataSet(scopeAverageYVals, "Scopes");
+        set1.setBarSpacePercent(35f);
 
-        for (int i = 0; i < count; i++) {
+        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+        dataSets.add(set1);
 
-            float mult = (range + 1);
-            float val = (float) (Math.random() * mult) + 3;// + (float)
-            // ((mult *
-            // 0.1) / 10);
-            yVals.add(new Entry(val, i));
-        }
+        BarData data = new BarData(scopeAverageXVals, dataSets);
+        data.setValueTextSize(VALUE_TEXT_SIZE);
 
-        // create a dataset and give it a type
-        LineDataSet set1 = new LineDataSet(yVals, "DataSet 1");
-        // set1.setFillAlpha(110);
-        // set1.setFillColor(Color.RED);
-
-        // set the line to be drawn like this "- - - - - -"
-        set1.enableDashedLine(10f, 5f, 0f);
-        set1.enableDashedHighlightLine(10f, 5f, 0f);
-        set1.setColor(Color.BLACK);
-        set1.setCircleColor(Color.BLACK);
-        set1.setLineWidth(1f);
-        set1.setCircleSize(3f);
-        set1.setDrawCircleHole(false);
-        set1.setValueTextSize(9f);
-        set1.setFillAlpha(65);
-        set1.setFillColor(Color.BLACK);
-        */
-//        set1.setDrawFilled(true);
-        // set1.setShader(new LinearGradient(0, 0, 0, mChart.getHeight(),
-        // Color.BLACK, Color.WHITE, Shader.TileMode.MIRROR));
-
-        /*
-        ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
-        dataSets.add(set1); // add the datasets
-
-        // create a data object with the datasets
-        LineData data = new LineData(xVals, dataSets);
-*/
-        // set data
+        chartAverageScopes.setData(data);
     }
 
     public void getTracking(boolean withExitButton) {
@@ -388,9 +408,6 @@ public class TrackingFragment extends Fragment {
             List<MoodRating> singleRatingList = new ArrayList<MoodRating>();
             singleRatingList.add(firstRating);
 
-            final TrackingSummaryAdapter adapter = new TrackingSummaryAdapter(getActivity(), R.layout.tracking_input, singleRatingList);
-            trackingList.setAdapter(adapter);
-            trackingList.requestFocus();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.tracking_wizard_title);
@@ -412,7 +429,25 @@ public class TrackingFragment extends Fragment {
                 }
             });
 
-            builder.show();
+            final AlertDialog dialog = builder.create();
+
+            final TrackingSummaryAdapter adapter = new TrackingSummaryAdapter(getActivity(), R.layout.tracking_input, singleRatingList, new TrackingSummaryAdapter.OnOneRatingMadeListener() {
+                @Override
+                public void ratingMade() {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            dialog.dismiss();
+                            getTrackingWizardElement(withExitButton, moodRatings);
+                        }
+                    }, 200);
+                }
+            });
+            trackingList.setAdapter(adapter);
+            trackingList.requestFocus();
+
+            dialog.show();
         }
     }
 
@@ -424,7 +459,7 @@ public class TrackingFragment extends Fragment {
         final ExtendedMoodRatingDao extendedMoodRatingDao = DaoFactory.getInstance(getActivity()).getExtendedMoodRatingDao();
         final List<MoodScope> moodScopes = DaoFactory.getInstance(getActivity()).getExtendedMoodScopeDao().getAllMoodScopes();
         final List<MoodRating> moodRatings = getCurrentDayMoodRatings(moodScopes);
-        final TrackingSummaryAdapter adapter = new TrackingSummaryAdapter(getActivity(), R.layout.tracking_input, moodRatings);
+        final TrackingSummaryAdapter adapter = new TrackingSummaryAdapter(getActivity(), R.layout.tracking_input, moodRatings, null);
         trackingList.setAdapter(adapter);
         trackingList.requestFocus();
 

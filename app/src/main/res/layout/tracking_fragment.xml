@@ -33,6 +33,12 @@
                 android:layout_marginTop="16dp" />
 
 
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chartAverageScopes"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
+
+
             <TextView
                 android:id="@+id/titleScopes"
                 android:layout_width="match_parent"

@@ -1,6 +1,7 @@
 package com.techlung.moodtracker.tracking;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,12 @@ import java.util.List;
 public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
 
     public static final float FADED = 0.1f;
+    private OnOneRatingMadeListener listener;
     
-    public TrackingSummaryAdapter(Context context, int textViewResourceId, List<MoodRating> objects) {
+    public TrackingSummaryAdapter(Context context, int textViewResourceId, List<MoodRating> objects, @Nullable OnOneRatingMadeListener listener) {
         super(context, textViewResourceId, objects);
+
+        this.listener = listener;
     }
 
     @Override
@@ -112,6 +116,7 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
                 //veryLow.startAnimation(createFadeinAnimation(veryLow));
                 veryLow.setAlpha(1.0f);
                 YoYo.with(Techniques.Tada).duration(500).playOn(veryLow);
+                fireListener();
             }
         });
 
@@ -124,6 +129,7 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
                 //low.startAnimation(createFadeinAnimation(low));
                 low.setAlpha(1.0f);
                 YoYo.with(Techniques.Tada).duration(500).playOn(low);
+                fireListener();
             }
         });
 
@@ -136,6 +142,7 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
                 //normal.startAnimation(createFadeinAnimation(normal));
                 normal.setAlpha(1.0f);
                 YoYo.with(Techniques.Tada).duration(500).playOn(normal);
+                fireListener();
             }
         });
 
@@ -148,6 +155,7 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
                 //high.startAnimation(createFadeinAnimation(high));
                 high.setAlpha(1.0f);
                 YoYo.with(Techniques.Tada).duration(500).playOn(high);
+                fireListener();
             }
         });
 
@@ -160,10 +168,17 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
                 //veryHigh.startAnimation(createFadeinAnimation(veryHigh));
                 veryHigh.setAlpha(1.0f);
                 YoYo.with(Techniques.Tada).duration(500).playOn(veryHigh);
+                fireListener();
             }
         });
 
         return convertView;
+    }
+
+    private void fireListener() {
+        if (listener != null) {
+            listener.ratingMade();
+        }
     }
 
     private void fadeoutSelected(View moodVeryLow, View moodLow, View moodNormal, View moodHigh, View moodVeryHigh, Integer rating) {
@@ -320,5 +335,9 @@ public class TrackingSummaryAdapter extends ArrayAdapter<MoodRating> {
         });
         return scale;
     }*/
+
+    public interface OnOneRatingMadeListener {
+        void ratingMade();
+    }
 
 }

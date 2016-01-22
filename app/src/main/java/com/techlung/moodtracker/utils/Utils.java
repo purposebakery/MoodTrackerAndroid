@@ -36,13 +36,21 @@ public class Utils {
     }
 
     public static String formatDate(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        return format.format(date);
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        return format.format(date);} catch (Exception e) {
+            e.printStackTrace();
+            return "N/A";
+        }
+
     }
 
     public static String formatDateShort(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM");
-        return format.format(date);
+        try {SimpleDateFormat format = new SimpleDateFormat("dd.MM");
+        return format.format(date);} catch (Exception e) {
+            e.printStackTrace();
+            return "N/A";
+        }
     }
 
     public static Date parseDate(String date) {

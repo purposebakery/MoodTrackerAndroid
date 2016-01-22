@@ -4,6 +4,7 @@ import com.techlung.moodtracker.greendao.generated.MoodRating;
 import com.techlung.moodtracker.greendao.generated.MoodRatingDao;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;

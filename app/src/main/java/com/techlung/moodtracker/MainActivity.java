@@ -1,9 +1,13 @@
 package com.techlung.moodtracker;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,11 +24,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
+import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.techlung.moodtracker.greendao.extended.DaoFactory;
 import com.techlung.moodtracker.greendao.extended.ExtendedMoodScopeDao;
 import com.techlung.moodtracker.greendao.generated.MoodScope;
+import com.techlung.moodtracker.io.CsvHandler;
 import com.techlung.moodtracker.logbook.LogListFragment;
 import com.techlung.moodtracker.modescope.MoodScopeActivity;
 import com.techlung.moodtracker.notification.NotificationManager;
@@ -32,6 +36,8 @@ import com.techlung.moodtracker.settings.Preferences;
 import com.techlung.moodtracker.settings.SettingsActivity;
 import com.techlung.moodtracker.tracking.TrackingFragment;
 import com.techlung.moodtracker.utils.ShareUtil;
+
+import java.io.File;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -145,11 +151,10 @@ public class MainActivity extends BaseActivity
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_import) {
-            // TODO Import
-            Toast.makeText(this, "Import coming up :)", Toast.LENGTH_LONG).show();
+            askForFileImport();
         } else if (id == R.id.nav_export) {
-            // TODO Export
-            Toast.makeText(this, "Export coming up :)", Toast.LENGTH_LONG).show();
+            CsvHandler handler = new CsvHandler();
+            handler.io(this, CsvHandler.IOAction.EXPORT, null);
         } else if (id == R.id.nav_share) {
             ShareUtil.showShareAppAlert(this);
         }
@@ -158,6 +163,35 @@ public class MainActivity extends BaseActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void askForFileImport() {
+        Intent i = new Intent(this, FilePickerActivity.class);
+        // This works if you defined the intent filter
+        // Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+
+        // Set these depending on your use case. These are the defaults.
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
+        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
+
+        // Configure initial directory by specifying a String.
+        // You could specify a String like "/storage/emulated/0/", but that can
+        // dangerous. Always use Android's API calls to get paths to the SD-card or
+        // internal memory.
+        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
+
+        startActivityForResult(i, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            Uri uri = data.getData();
+            CsvHandler handler = new CsvHandler();
+            handler.io(this, CsvHandler.IOAction.IMPORT, new File(uri.getPath()));
+        }
+    }
+
 
     private void checkAndDoFirstStart() {
         if (Preferences.isFirstStartup()) {

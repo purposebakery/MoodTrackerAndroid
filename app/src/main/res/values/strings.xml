@@ -100,9 +100,17 @@
     <string name="share_app_url">http://play.google.com/store/apps/details?id=com.techlung.moodtracker</string>
 
     <!-- IO -->
+    <string name="io_export">Export</string>
+    <string name="io_import">Import</string>
+    <string-array name="io_db_format">
+        <item>1. Mood ratings and scopes</item>
+        <item>2. Diary entries</item>
+    </string-array>
     <string name="io_export_fail">Export failed... Sorry :(</string>
     <string name="io_export_success">Export succeeded!</string>
     <string name="io_import_fail">Oh no... Import failed :(</string>
     <string name="io_import_success">Import succeeded!</string>
+
+    <string name="io_import_delete_warning">All current entries will be deleted.</string>
 
 </resources>
