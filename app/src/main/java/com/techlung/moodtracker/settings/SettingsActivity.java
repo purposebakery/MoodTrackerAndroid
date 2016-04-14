@@ -274,13 +274,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             try {
                 bindTrackingHistory();
                 bindTrackingMethod();
+                bindTrackingCalculation();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
         private void bindTrackingHistory() {
-            Preference trackingHistoryLength = findPreference("TRACKING_HISTORY_LENGTH");
+            Preference trackingHistoryLength = findPreference(Preferences.TRACKING_HISTORY_LENGTH);
             trackingHistoryLength.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
             String[] titles = trackingHistoryLength.getContext().getResources().getStringArray(R.array.pref_tracking_history_length_titles);
             String[] values = trackingHistoryLength.getContext().getResources().getStringArray(R.array.pref_tracking_history_length_values);
@@ -297,7 +298,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
 
         private void bindTrackingMethod() {
-            Preference trackingMethod = findPreference("TRACKING_METHOD");
+            Preference trackingMethod = findPreference(Preferences.TRACKING_METHOD);
             trackingMethod.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
             String[] titles = trackingMethod.getContext().getResources().getStringArray(R.array.pref_tracking_method_titles);
             String[] values = trackingMethod.getContext().getResources().getStringArray(R.array.pref_tracking_method_values);
@@ -311,6 +312,23 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             sBindPreferenceSummaryToValueListener.onPreferenceChange(trackingMethod, title);
             trackingMethod.setSummary(title);
+        }
+
+        private void bindTrackingCalculation() {
+            Preference trackingCalculation = findPreference(Preferences.TRACKING_CALCULATION);
+            trackingCalculation.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+            String[] titles = trackingCalculation.getContext().getResources().getStringArray(R.array.pref_tracking_calculation_titles);
+            String[] values = trackingCalculation.getContext().getResources().getStringArray(R.array.pref_tracking_calculation_values);
+            String value = Preferences.getTrackingCalculation().name();
+            String title = "";
+            for (int i = 0; i < values.length; ++i) {
+                if (value.equals(values[i])) {
+                    title = titles[i];
+                }
+            }
+
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(trackingCalculation, title);
+            trackingCalculation.setSummary(title);
         }
 
         @Override

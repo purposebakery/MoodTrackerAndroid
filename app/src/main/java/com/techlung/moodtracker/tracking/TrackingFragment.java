@@ -35,6 +35,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.techlung.moodtracker.R;
+import com.techlung.moodtracker.enums.TrackingCalculation;
 import com.techlung.moodtracker.enums.TrackingMethod;
 import com.techlung.moodtracker.greendao.extended.DaoFactory;
 import com.techlung.moodtracker.greendao.extended.ExtendedMoodRatingDao;
@@ -70,6 +71,8 @@ public class TrackingFragment extends Fragment {
     private LineChart chartScopes;
     private BarChart chartAverageScopes;
 
+    private TextView titleAverage;
+
     boolean openTrackingFromExternal;
 
     @Override
@@ -104,13 +107,11 @@ public class TrackingFragment extends Fragment {
         chartScopes = (LineChart) root.findViewById(R.id.chartScopes);
         chartAverageScopes = (BarChart) root.findViewById(R.id.chartAverageScopes);
 
+        titleAverage = (TextView) root.findViewById(R.id.titleAverage);
+
         if (openTrackingFromExternal) {
             getTracking(true);
         }
-        initChartAverage(chartAverage);
-        initChartScopes(chartScopes);
-
-        initChartAverageScopes(chartAverageScopes);
 
         updateUi();
 
@@ -124,6 +125,8 @@ public class TrackingFragment extends Fragment {
 
         // scaling can now only be done on x- and y-axis separately
         chart.setPinchZoom(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setScaleEnabled(false);
         chart.setDrawGridBackground(false);
 
         XAxis xAxis = chart.getXAxis();
@@ -132,7 +135,11 @@ public class TrackingFragment extends Fragment {
         xAxis.setSpaceBetweenLabels(2);
 
         YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setAxisMaxValue(6);
+        if (Preferences.getTrackingCalculation() == TrackingCalculation.AVERAGE) {
+            leftAxis.setAxisMaxValue(6);
+        } else {
+            leftAxis.resetAxisMaxValue();
+        }
         leftAxis.setAxisMinValue(0);
         leftAxis.setStartAtZero(false);
 
@@ -144,69 +151,88 @@ public class TrackingFragment extends Fragment {
     }
 
     private void initChartAverage(LineChart chart) {
-        initChartGeneric(chart);
 
-        LimitLine ll1 = new LimitLine(Rating.HIGH, "All Good");
-        ll1.setLineWidth(4f);
-        ll1.enableDashedLine(10f, 10f, 0f);
-        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-        ll1.setTextSize(10f);
-        ll1.setLineColor(getActivity().getResources().getColor(R.color.green));
+        chart.setDescription("");
+        chart.setSelected(false);
 
-        LimitLine ll2 = new LimitLine(Rating.LOW, "Danger");
-        ll2.setLineWidth(4f);
-        ll2.enableDashedLine(10f, 10f, 0f);
-        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        ll2.setTextSize(10f);
-        ll2.setLineColor(getActivity().getResources().getColor(R.color.red));
+        chart.setPinchZoom(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setScaleEnabled(false);
 
         YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-        leftAxis.addLimitLine(ll1);
-        leftAxis.addLimitLine(ll2);
+        if (Preferences.getTrackingCalculation() == TrackingCalculation.AVERAGE) {
+            leftAxis.setAxisMaxValue(6);
+        } else {
+            leftAxis.resetAxisMaxValue();
+        }
+        leftAxis.setAxisMinValue(0);
+        leftAxis.setStartAtZero(false);
+        leftAxis.setDrawLimitLinesBehindData(true);
 
-        leftAxis.enableGridDashedLine(10f, 10f, 0f);
+        chart.getAxisRight().setEnabled(false);
 
         Legend l = chart.getLegend();
         l.setEnabled(false);
 
+        if (Preferences.getTrackingCalculation() == TrackingCalculation.AVERAGE) {
+            LimitLine ll1 = new LimitLine(Rating.HIGH, "All Good");
+            ll1.setLineWidth(4f);
+            ll1.enableDashedLine(10f, 10f, 0f);
+            ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+            ll1.setTextSize(10f);
+            ll1.setLineColor(getActivity().getResources().getColor(R.color.green));
+
+            LimitLine ll2 = new LimitLine(Rating.LOW, "Danger");
+            ll2.setLineWidth(4f);
+            ll2.enableDashedLine(10f, 10f, 0f);
+            ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+            ll2.setTextSize(10f);
+            ll2.setLineColor(getActivity().getResources().getColor(R.color.red));
+
+            leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+            leftAxis.addLimitLine(ll1);
+            leftAxis.addLimitLine(ll2);
+        }
+
+        leftAxis.enableGridDashedLine(10f, 10f, 0f);
+
     }
 
     private void initChartScopes(LineChart chart) {
-        initChartGeneric(chart);
 
-    }
-
-    private void initChartGeneric(LineChart chart) {
         chart.setDescription("");
         chart.setSelected(false);
+
+        chart.setPinchZoom(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setScaleEnabled(false);
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setAxisMaxValue(6);
         leftAxis.setAxisMinValue(0);
         leftAxis.setStartAtZero(false);
-        //leftAxis.setYOffset(20f);
-
-        // limit lines are drawn behind data (and not on top)
         leftAxis.setDrawLimitLinesBehindData(true);
 
         chart.getAxisRight().setEnabled(false);
 
-        // get the legend (only possible after setting data)
         Legend l = chart.getLegend();
-
-        // modify the legend ...
         l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
         l.setForm(Legend.LegendForm.CIRCLE);
-
-
-//        mChart.setVisibleXRange(20);
-//        mChart.setVisibleYRange(20f, AxisDependency.LEFT);
-//        mChart.centerViewTo(20, 50, AxisDependency.LEFT);
 
     }
 
     public void updateUi() {
+
+        initChartAverage(chartAverage);
+        initChartScopes(chartScopes);
+        initChartAverageScopes(chartAverageScopes);
+
+        if (Preferences.getTrackingCalculation() == TrackingCalculation.AVERAGE) {
+            titleAverage.setText(R.string.tracking_title_average);
+        } else {
+            titleAverage.setText(R.string.tracking_title_sum);
+        }
+
         int historyLength = Integer.parseInt(Preferences.getTrackingHistoryLength());
         Date today = Utils.getCurrentDay();
         long timediff = 1000l * 60l * 60l * 24l * (long)historyLength;
@@ -268,7 +294,9 @@ public class TrackingFragment extends Fragment {
                 }
 
                 if (averageCounter > 0) {
-                    average = average / (float) averageCounter;
+                    if (Preferences.getTrackingCalculation() == TrackingCalculation.AVERAGE) {
+                        average = average / (float) averageCounter;
+                    }
                 } else {
                     average = Rating.NORMAL;
                 }
@@ -313,6 +341,7 @@ public class TrackingFragment extends Fragment {
         int[] rainbow = getActivity().getResources().getIntArray(R.array.rainbow);
         int counter = 0;
         ArrayList<LineDataSet> scopeDataSets = new ArrayList<LineDataSet>();
+        int[] colors = new int[dataMap.size()];
         for (Map.Entry<Long, Integer[]> entry : dataMap.entrySet()) {
             MoodScope scope = moodScopeMap.get(entry.getKey());
             ArrayList<Entry> scopeYVals = new ArrayList<Entry>();
@@ -322,6 +351,7 @@ public class TrackingFragment extends Fragment {
             LineDataSet scopeSet = new LineDataSet(scopeYVals, scope.getName());
 
             int color = rainbow[(int)(((float) rainbow.length / (float) moodScopes.size()) * counter)];
+            colors[counter] = color;
             scopeSet.setColor(color);
             scopeSet.setCircleColor(color);
             scopeSet.setLineWidth(LINE_WIDTH);
@@ -358,7 +388,9 @@ public class TrackingFragment extends Fragment {
                     averageCount++;
                 }
             }
-            averageValue /= (float) averageCount;
+            if (Preferences.getTrackingCalculation() == TrackingCalculation.AVERAGE) {
+                averageValue /= (float) averageCount;
+            }
             scopeAverageYVals.add(new BarEntry(averageValue, counter));
 
             counter++;
@@ -367,6 +399,7 @@ public class TrackingFragment extends Fragment {
 
         BarDataSet set1 = new BarDataSet(scopeAverageYVals, "Scopes");
         set1.setBarSpacePercent(35f);
+        set1.setColors(colors);
 
         ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
         dataSets.add(set1);

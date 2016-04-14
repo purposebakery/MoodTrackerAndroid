@@ -41,6 +41,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.putExtra(MainActivity.OPEN_TRACKING, true);
 
+        mBuilder.setAutoCancel(true);
 // The stack builder object will contain an artificial back stack for the
 // started Activity.
 // This ensures that navigating backward from the Activity leads out of

@@ -46,6 +46,8 @@
     <string name="log_add_input_error_empty">Empty input</string>
 
     <!-- Tracking -->
+    <string name="tracking_title_average">Mood Average</string>
+    <string name="tracking_title_sum">Mood Sum</string>
     <string name="tracking_wizard_title">Scope rating</string>
     <string name="tracking_summary">Summary</string>
     <string name="tracking_initialized_missed_days">Initialized %1$d missed days.</string>
@@ -88,6 +90,16 @@
     <string-array name="pref_tracking_method_values">
         <item>ALL_AT_ONCE</item>
         <item>ONE_AT_A_TIME</item>
+    </string-array>
+
+    <string name="pref_tracking_calculation">Chart calculation</string>
+    <string-array name="pref_tracking_calculation_titles">
+        <item>Show rating sum</item>
+        <item>Calculate average rating</item>
+    </string-array>
+    <string-array name="pref_tracking_calculation_values">
+        <item>SUM</item>
+        <item>AVERAGE</item>
     </string-array>
 
     <!-- Notification -->
